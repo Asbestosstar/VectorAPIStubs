@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.asbestosstar</groupId>
+    <artifactId>vectorapistubs</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>Vector API Compile Stubs</name>
+
+    <description>
+        Minimal compile-only stubs for the stable shared surface of
+        jdk.incubator.vector. This artifact must not be placed on the runtime
+        classpath; use the Vector API module supplied by the running JDK.
+    </description>
+
+    <url>https://github.com/Asbestosstar/VectorAPIStubs</url>
+
+    <licenses>
+        <license>
+            <name>GPL-2.0</name>
+            <url>https://opensource.org/license/gpl-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>asbestosstar</id>
+            <name>AsbestosStar</name>
+            <email>asbestosstar@asbestosstar.com</email>
+            <url>https://github.com/Asbestosstar</url>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>
+            scm:git:https://github.com/Asbestosstar/VectorAPIStubs.git
+        </connection>
+
+        <developerConnection>
+            scm:git:ssh://git@github.com/Asbestosstar/VectorAPIStubs.git
+        </developerConnection>
+
+        <url>
+            https://github.com/Asbestosstar/VectorAPIStubs
+        </url>
+
+        <tag>HEAD</tag>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>
+            https://github.com/Asbestosstar/VectorAPIStubs/issues
+        </url>
+    </issueManagement>
+
+    <properties>
+        <project.build.sourceEncoding>
+            UTF-8
+        </project.build.sourceEncoding>
+
+        <project.reporting.outputEncoding>
+            UTF-8
+        </project.reporting.outputEncoding>
+
+        <!-- Produce Java 8-compatible class files. -->
+        <maven.compiler.release>8</maven.compiler.release>
+
+        <maven.compiler.plugin.version>
+            3.15.0
+        </maven.compiler.plugin.version>
+
+        <maven.source.plugin.version>
+            3.4.0
+        </maven.source.plugin.version>
+
+        <maven.javadoc.plugin.version>
+            3.12.0
+        </maven.javadoc.plugin.version>
+
+        <maven.gpg.plugin.version>
+            3.2.8
+        </maven.gpg.plugin.version>
+
+        <central.publishing.plugin.version>
+            0.11.0
+        </central.publishing.plugin.version>
+    </properties>
+
+    <!--
+        No dependencies are required.
+
+        This artifact is itself a compile-only compatibility surface. Projects
+        consuming it should declare it with Maven scope "provided".
+    -->
+    <dependencies/>
+
+    <build>
+        <plugins>
+
+            <!-- Compile Java 8-compatible stub classes. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.version}</version>
+
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <showWarnings>true</showWarnings>
+                </configuration>
+            </plugin>
+
+            <!-- Attach the source JAR required by Maven Central. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven.source.plugin.version}</version>
+
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Attach the Javadoc JAR required by Maven Central. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.plugin.version}</version>
+
+                <configuration>
+                    <source>${maven.compiler.release}</source>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <docencoding>
+                        ${project.reporting.outputEncoding}
+                    </docencoding>
+                    <charset>
+                        ${project.reporting.outputEncoding}
+                    </charset>
+
+                    <doclint>none</doclint>
+                    <failOnError>false</failOnError>
+                    <quiet>true</quiet>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>package</phase>
+
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Sign the JAR, POM, source JAR and Javadoc JAR. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>${maven.gpg.plugin.version}</version>
+
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+
+                        <configuration>
+                            <bestPractices>true</bestPractices>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Upload and publish through the Central Publisher Portal. -->
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>
+                    central-publishing-maven-plugin
+                </artifactId>
+                <version>
+                    ${central.publishing.plugin.version}
+                </version>
+
+                <extensions>true</extensions>
+
+                <configuration>
+                    <publishingServerId>
+                        central
+                    </publishingServerId>
+
+                    <autoPublish>true</autoPublish>
+                    <waitUntil>published</waitUntil>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <!-- Skip GPG signing during ordinary local development. -->
+    <profiles>
+        <profile>
+            <id>dev</id>
+
+            <properties>
+                <gpg.skip>true</gpg.skip>
+            </properties>
+        </profile>
+    </profiles>
+
+</project>
